@@ -42,13 +42,14 @@ task :concurrent => :setup do
     msg = AttributeQueryMessage.new(uid, @issuer_id)
     xml = msg.format
     actor = QueryAgent.spawn(uid, query)
-    result = actor.ask xml
-    outputs << Formatter.new(result.value.to_xml).format
     actors << actor
+    xml_msg = Hamster::Hash.new(type: :xml, payload: xml)
+    actor.tell xml_msg
   end
   actors.each do |actor|
-    actor.tell :terminate!                           # => #<Concurrent::Actor::Reference /first (Counter)>
-    actor.ask! :terminated?                          # => true
+    report_msg = Hamster::Hash.new(type: :report)
+    result = actor.ask report_msg
+    outputs << Formatter.new(result.value.to_xml).format
   end
 
   puts outputs
