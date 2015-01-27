@@ -5,6 +5,8 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     builder (3.2.2)
+    concurrent-ruby (0.8.0)
+      ref (~> 1.0, >= 1.0.5)
     diff-lcs (1.2.5)
     gyoku (1.2.2)
       builder (>= 2.1.2)
@@ -19,6 +21,7 @@ GEM
     nori (2.4.0)
     rack (1.6.0)
     rake (10.4.2)
+    ref (1.0.5)
     rspec (3.1.0)
       rspec-core (~> 3.1.0)
       rspec-expectations (~> 3.1.0)
@@ -52,6 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  concurrent-ruby
   rake
   rspec
   savon

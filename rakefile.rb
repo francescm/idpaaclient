@@ -9,6 +9,7 @@ require 'yaml'
 require 'query'
 require 'attribute_query_message'
 require 'pp'
+require 'query_agent'
 
 task :default => [:spec]
 
@@ -25,7 +26,31 @@ task :setup do
 end
 
 
-desc "esegue una query"
+desc "queries the AA, concurrent"
+task :concurrent => :setup do
+  uid_list = ENV["uidlist"]
+  if !uid_list
+    puts "usage: rake #{task.name} uidlist=a_uid,b_uid ... (comma separated)"
+    exit 0
+  end
+  actors = []
+  query = Query.new(@url, @cert_file, @key_file, @cacert)
+  uids = uid_list.split(",")
+  uids.each do |uid|
+    msg = AttributeQueryMessage.new(uid, @issuer_id)
+    xml = msg.format
+    actor = QueryAgent.spawn(uid, query)
+    result = actor.ask xml
+    puts result.value
+    actors << actor
+  end
+  actors.each do |actor|
+    actor.tell :terminate!                           # => #<Concurrent::Actor::Reference /first (Counter)>
+    actor.ask! :terminated?                          # => true
+  end
+end
+
+desc "queries the AA"
 task :query => :setup do
   uid = ENV["uid"]
   if !uid
