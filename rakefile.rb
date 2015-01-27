@@ -10,6 +10,7 @@ require 'query'
 require 'attribute_query_message'
 require 'pp'
 require 'query_agent'
+require 'formatter'
 
 task :default => [:spec]
 
@@ -36,18 +37,21 @@ task :concurrent => :setup do
   actors = []
   query = Query.new(@url, @cert_file, @key_file, @cacert)
   uids = uid_list.split(",")
+  outputs = []
   uids.each do |uid|
     msg = AttributeQueryMessage.new(uid, @issuer_id)
     xml = msg.format
     actor = QueryAgent.spawn(uid, query)
     result = actor.ask xml
-    puts result.value
+    outputs << Formatter.new(result.value.to_xml).format
     actors << actor
   end
   actors.each do |actor|
     actor.tell :terminate!                           # => #<Concurrent::Actor::Reference /first (Counter)>
     actor.ask! :terminated?                          # => true
   end
+
+  puts outputs
 end
 
 desc "queries the AA"
@@ -63,11 +67,6 @@ task :query => :setup do
   query = Query.new(@url, @cert_file, @key_file, @cacert)
   result = query.perform(binary_data)
   # what about a class to handle presentation?
-  result.xpath("//saml1:Attribute").each do |node|
-	scope = unless node.children.first.attributes.empty?
-			node.children.first.attributes["Scope"].value
-		end
-	
-        puts "#{node.attributes["AttributeName"].value} => #{node.text} #{ scope ? "@" : ""} #{scope}"
-  end
+  puts Formatter.new(result.to_xml).format
+
 end
