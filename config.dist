@@ -1,0 +1,6 @@
+---
+:issuer_id: https://test.example.org/sp
+:cert: certs/sp-cert.pem
+:key: certs/sp-key.pem
+:url: https://idp3.example.org:8443/idp/profile/SAML1/SOAP/AttributeQuery
+:cacert: idp.pem

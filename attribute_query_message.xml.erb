@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+    <S:Body>
+        <samlp:Request IssueInstant="<%= @issue_instant %>"
+            MajorVersion="1" MinorVersion="1"
+            RequestID="<%= @request_id %>" xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol">
+            <samlp:AttributeQuery Resource="<%= @issuer_id %>">
+                <saml:Subject xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion">
+                    <saml:NameIdentifier Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"><%= @nameid %></saml:NameIdentifier>
+                </saml:Subject>
+            </samlp:AttributeQuery>
+        </samlp:Request>
+    </S:Body>
+</S:Envelope>
+

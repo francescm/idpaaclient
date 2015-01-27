@@ -1,0 +1,25 @@
+= IDPAAClient =
+
+Ruby client for the shibboleth IdP Attribute Authority.
+
+== Setup and nameid ==
+
+To be really useful, you need a direct nameid in your IdP.
+
+IDPAAClient authenticates via key and cert from a shibboleth-sp, whose EntityID is the issuer_id. 
+
+== Alternatives ==
+
+resolvertest, command-line utility, bundled in each shibboleth-sp package.
+
+To manually execute a AA query with curl:
+
+curl -1 -vvvv --cacert idp.pem --cert ./certs/sp-cert.pem --key ./certs/sp-key.pem --data '#{data_binary}' --url https://idp.example.org:8443/idp/profile/SAML1/SOAP/AttributeQuery -H "Content-Type: text/xml; charset=UTF-8"
+
+But it will likely fail because you need to generate a unique RequestID and a timely IssueInstant.
+
+== Usage ==
+
+customize config.yaml then:
+bundle install
+bundle exec rake query uid=a_name_id
