@@ -19,7 +19,7 @@ describe Formatter do
     expect(output.split("\n").count).to be_eql 2
   end
 
-  it "format xml handles scope" do
+  it "format xml method handles scope" do
     f = Formatter.new @xml
     output = f.format
     output.split("\n").each do |line|
@@ -31,6 +31,16 @@ describe Formatter do
     end
 
   end
+
+  it "format xml handles multiple-valued attrs", :focus => true do
+    xml = File.open("./spec/soap_ou.xml").read
+    f = Formatter.new xml
+    output = f.format
+    #puts output
+    expect(output.split("\n").find_all{|l| l.match /ou/}.size > 1)
+
+  end
+
 
 end
 
