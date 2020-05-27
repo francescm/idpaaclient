@@ -1,6 +1,7 @@
 #encoding: utf-8
 
 require 'concurrent'
+require 'concurrent-edge'
 require_relative 'query'
 require 'hamster'
 
